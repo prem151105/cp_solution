@@ -1,3 +1,4 @@
+// Intution Include only those bit which are in x to do this condition is (v | x) == x
 #include<bits/stdc++.h>
 using namespace std;
 
