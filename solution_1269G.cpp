@@ -45,6 +45,6 @@ int32_t main() {
 }
 
 /*
-Time Complexity (TC): O(nlogn)
+Time Complexity (TC): O(n)
 Space Complexity (SC): O(n)
 */
