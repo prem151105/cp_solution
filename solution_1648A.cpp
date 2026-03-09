@@ -51,3 +51,6 @@ int32_t main() {
         solve();
     }
 }
+/*For each color, sort its row indices (and column indices separately) and accumulate Manhattan distances using the recurrence:
+cur+=(a[i]−a[i−1])×i
+and add cur to the answer.*/
