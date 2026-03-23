@@ -9,19 +9,25 @@ int main() {
     for (int i = 0; i < n; i++) cin >> a[i];
     for (int i = 0; i < n; i++) cin >> b[i];
 
-    unordered_set<int> exited;
-    int i = 0, ans = 0;
+    unordered_set<int> s;
+    int j = 0;
+    int ans = 0;
 
-    for (int j = 0; j < n; j++) {
-        if (b[j] == a[i]) {
-            i++;
-            while (i < n && exited.count(a[i])) {
-                i++;
-            }
-        } else {
-            ans++;
+    for(int i = 0; i < n; i++){
+        if(j < n && s.find(a[j]) != s.end()){
+            j++;          
+            i--;         
         }
-        exited.insert(b[j]);
+        else{
+            if(j < n && b[i] != a[j]){
+                ans++;
+                s.insert(b[i]);
+            }
+            else{
+                j++;
+                s.insert(b[i]);
+            }
+        }
     }
 
     cout << ans << endl;
