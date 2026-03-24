@@ -44,7 +44,7 @@ void solve() {
     if (used_types.size() == 1) {
         cout << 1 << endl;
         for (int i = 0; i < n; i++) {
-            cout << 1 << "";
+            cout << 1 << " ";
         }
     } else {
         cout << 2 << endl;
