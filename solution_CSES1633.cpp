@@ -1,27 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-int solve(int n, vector<int> &dp) {
-    if (n < 0) {
-        return 0;
-    }
-    if (n == 0) {
-        return 1;
-    }
-    if (dp[n] != -1) {
-        return dp[n];
-    }
-    dp[n] = 0;
-    for (int i = 1; i <= 6; i++) {
-        dp[n] += solve(n - i, dp);
-    }
-    return dp[n];
-}
-
-int main() {
+int main(){
     int n;
-    cin >> n;
-    vector<int> dp(n + 1, -1);
-    int k = solve(n, dp);
-    cout << k << endl;
+    cin>>n;
+    vector<long long>dp(n+1,0);// Here dp[x] is the number of ways to reach x
+    dp[0]=1;
+    dp[1]=1;
+    for(int i=2;i<=n;i++){
+        for(int j=1;j<=i && j<=6;j++){
+            dp[i]+=dp[i-j];
+        }
+        dp[i]%=1000000007;
+    }
+    cout<<dp[n];
 }
