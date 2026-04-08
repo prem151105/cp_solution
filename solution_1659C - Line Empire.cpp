@@ -1,69 +1,45 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-int query(int i, int j) {
-		// Interactive query: convert 0-based indices to 1-based and flush with endl
-		cout << "? " << i + 1 << ' ' << j + 1 << endl;
-		int ans;
-		cin >> ans; // Reads a[i] * a[j] from the judge (or from input in hacked version)
-		return ans;
-}
+#define int long long
 
-int common(pair<int, int> a, pair<int, int> b) {
-		// Returns the common element between two pairs (they are known to share exactly one)
-		if (a.first == b.first || a.first == b.second) return a.first;
-		else return a.second;
-}
+int32_t main() {
+		ios::sync_with_stdio(false);
+		cin.tie(NULL);
+		cout.tie(NULL);
 
-int other(pair<int, int> p, int a) {
-		// Given a pair and one of its values, returns the other value
-		if (p.first == a) return p.second;
-		else return p.first;
-}
+		int t;
+		cin >> t;
+		while (t--) {
+				int n, a, b;
+				cin >> n >> a >> b;
+				vector<int> x(n + 1);              // x[1..n] are kingdom positions; x[0] stays 0 (initial capital)
+				for (int i = 1; i <= n; i++)
+						cin >> x[i];
 
-void solve() {
-		vector<int> arr = {4, 8, 15, 16, 23, 42};
-		int n = arr.size();
-
-		// Precompute all pairwise products -> (value1, value2) mapping for quick reverse lookup
-		map<int, pair<int, int>> m;
-		for (int i = 0; i < n; i++) {
-				for (int j = i + 1; j < n; j++) {
-						m[arr[i] * arr[j]] = {arr[i], arr[j]};
+				vector<int> suf(n + 2, 0);         // suf[i] = x[i] + x[i+1] + ... + x[n]
+				suf[n] = x[n];
+				for (int i = n - 1; i >= 1; i--) {
+						suf[i] = suf[i + 1] + x[i];    // build suffix sums to query sum of tail efficiently
 				}
+
+				int ans = INT64_MAX;               // minimal total cost over all strategies
+				for (int i = 0; i <= n; i++) {
+						// Consider pivot i: conquer kingdoms up to x[i] while capital is at 0, then place capital at x[i],
+						// and conquer the rest from x[i]. For i = 0, we effectively never move the capital from 0.
+						int c = x[i] * (a + b) + (suf[i + 1] - (n - i) * x[i]) * b;
+						// x[i] * (a + b): b*x[i] (cost accrued up to x[i]) + a*x[i] (move capital to x[i])
+						// (suf[i+1] - (n - i) * x[i]) * b: sum over j > i of b * (x[j] - x[i])
+						ans = min(ans, c);
+				}
+
+				cout << ans << '\n';
 		}
 
-		vector<int> ans(6);
-
-		// Query products of adjacent positions (1,2) and (2,3)
-		auto p1 = m[query(0, 1)];
-		auto p2 = m[query(1, 2)];
-		// The shared number between these two products is a[2] (0-based index 1)
-		ans[1] = common(p1, p2);
-		ans[0] = other(p1, ans[1]); // From product of (a[0], a[1])
-		ans[2] = other(p2, ans[1]); // From product of (a[1], a[2])
-
-		// Repeat the same logic for positions (4,5) and (5,6)
-		p1 = m[query(3, 4)];
-		p2 = m[query(4, 5)];
-		ans[4] = common(p1, p2); // This is a[5] (0-based index 4)
-		ans[3] = other(p1, ans[4]);
-		ans[5] = other(p2, ans[4]);
-
-		// Output the final permutation and flush
-		cout << "! ";
-		for (auto x : ans) {
-				cout << x << ' ';
-		}
-		cout << endl;
-}
-
-int main() {
-		solve();
+		return 0;
 }
 
 /*
-Time Complexity (TC): O(1)
-Space Complexity (SC): O(1)
+Time Complexity (TC): O(n)
+Space Complexity (SC): O(n)
 */
