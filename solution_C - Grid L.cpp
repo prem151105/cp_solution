@@ -4,7 +4,7 @@ using namespace std;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
+// here is qmax​=nm+min(n,m) q<=min(n(m+1),m(n+1)) and p=n+m+nm
     int t;
     cin >> t;
     while (t--) {
