@@ -8,7 +8,8 @@ int dp[105][105][2];
 int main(){
     int n1,n2,k1,k2;
     cin>>n1>>n2>>k1>>k2;
-
+   //dp[i][j][0] = number of valid sequences using i zeros and j ones, ending in 0
+   // dp[i][j][1] = same but ending in 1
     dp[0][0][0] = dp[0][0][1] = 1;
 
     for(int i=0;i<=n1;i++){
