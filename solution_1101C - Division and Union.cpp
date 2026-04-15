@@ -1,54 +1,48 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void solve() {
-		int n;
-		cin >> n;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-		vector<vector<int>> a(n); // each element is {l, r, original_index}
-		for (int i = 0; i < n; i++) {
-				int l, r;
-				cin >> l >> r;
-				a[i] = {l, r, i}; // store segment along with its original position
-		}
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
 
-		sort(a.begin(), a.end()); // sort by l, then r, then index (default lexicographical)
+        vector<pair<pair<int,int>, int>> vp(n);
+        for (int i = 0; i < n; i++) {
+            cin >> vp[i].first.first >> vp[i].first.second;
+            vp[i].second = i;
+        }
 
-		vector<int> ans(n, 2); // default all segments to group 2
-		int mx = a[0][1];      // rightmost endpoint of the current merged prefix (group 1)
-		bool split_found = false; // becomes true once we find a gap to split groups
+        sort(vp.begin(), vp.end());
 
-		for (int i = 0; i < n; i++) {
-				if (a[i][0] > mx) {      // found a gap: next segment starts after current coverage
-						split_found = true;  // we can split here: prefix in group 1, rest in group 2
-						break;               // remaining segments stay as group 2 (already set)
-				}
-				ans[a[i][2]] = 1;        // assign this segment (by original index) to group 1
-				mx = max(mx, a[i][1]);   // extend coverage with this segment's right end
-		}
+        int mx = vp[0].first.second;
+        int cut = -1;
 
-		if (!split_found) {
-				cout << "-1\n"; // no gap means all segments intersect in a chain; impossible to split
-		} else {
-				for (auto v : ans) cout << v << ' '; // print groups in the original input order
-				cout << '\n';
-		}
+        for (int i = 1; i < n; i++) {
+            if (vp[i].first.first > mx) {
+                cut = i;
+                break;
+            }
+            mx = max(mx, vp[i].first.second);
+        }
+
+        if (cut == -1) {
+            cout << -1 << '\n';
+            continue;
+        }
+
+        vector<int> ans(n);
+        for (int i = 0; i < cut; i++) ans[vp[i].second] = 1;
+        for (int i = cut; i < n; i++) ans[vp[i].second] = 2;
+
+        for (int i = 0; i < n; i++) {
+            cout << ans[i] << ' ';
+        }
+        cout << '\n';
+    }
+    return 0;
 }
-
-int32_t main() {
-		ios::sync_with_stdio(false);
-		cin.tie(nullptr);
-
-		int t;
-		cin >> t;
-		while (t--) {
-				solve();
-		}
-
-		return 0;
-}
-
-/*
-Time Complexity (TC): O(nlogn)
-Space Complexity (SC): O(n)
-*/
