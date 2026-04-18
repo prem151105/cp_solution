@@ -1,44 +1,71 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define all(x) begin(x), end(x)
+const int N = 1000000;
+int spf[N + 1];
 
-int primebase(int x) {
-    set<int> s;
-    for (int i = 2; i*i <= x; i++) {
-        while (x % i == 0) {
-            s.insert(i);
-            x /= i;
+void sieve() {
+    for (int i = 2; i <= N; i++) spf[i] = i;
+    for (int i = 2; 1LL * i * i <= N; i++) {
+        if (spf[i] != i) continue;
+        for (int j = i * i; j <= N; j += i) {
+            if (spf[j] == j) spf[j] = i;
         }
     }
-    if (x > 1) s.insert(x);
-    if (s.size() > 1) return -1;
-    if (s.size() == 0) return 1;
-    return *s.begin();
 }
 
-void solve() {
-    int n;
-    cin >> n;
-    vector<int> a(n);
-    for (auto &i: a) cin >> i;
-    
-    // solve
-    vector<int> b(n);
-    for (int i = 0; i < n; i++) b[i] = primebase(a[i]);
-    if (is_sorted(all(a))) {
-        cout << "Bob\n";
-    } else if (*min_element(all(b)) == -1) {
-        cout << "Alice\n";
-    } else if (is_sorted(all(b))) {
-        cout << "Bob\n";
-    } else {
-        cout << "Alice\n";
-    }
+// returns:
+// -1 → multiple primes
+// p  → prime power base
+// 1  → if x == 1
+int primebase(int x) {
+    if (x == 1) return 1;
+
+    int p = spf[x];
+    while (x % p == 0) x /= p;
+
+    if (x > 1) return -1; // another prime exists
+    return p;
 }
 
-signed main() {
-    int t = 1;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    sieve();
+
+    int t;
     cin >> t;
-    while (t--) solve();
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> a(n), b(n);
+        for (int i = 0; i < n; i++) cin >> a[i];
+
+        if (is_sorted(a.begin(), a.end())) {
+            cout << "Bob\n";
+            continue;
+        }
+
+        bool has_bad = false;
+
+        for (int i = 0; i < n; i++) {
+            b[i] = primebase(a[i]);
+            if (b[i] == -1) {
+                has_bad = true;
+            }
+        }
+
+        if (has_bad) {
+            cout << "Alice\n";
+            continue;
+        }
+
+        if (is_sorted(b.begin(), b.end())) {
+            cout << "Bob\n";
+        } else {
+            cout << "Alice\n";
+        }
+    }
 }
